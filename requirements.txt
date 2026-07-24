@@ -6,7 +6,7 @@ asyncpg==0.30.0
 alembic==1.14.0
 pgvector==0.3.6
 psycopg2-binary==2.9.10
-pydantic==2.10.3
+pydantic==2.13.4
 pydantic-settings==2.7.0
 apscheduler==4.0.0a5
 sniffio==1.3.1
@@ -17,6 +17,7 @@ beautifulsoup4==4.15.0
 lxml==6.1.1
 websockets==16.0
 httpx==0.28.1
+mcp==1.28.1
 curl_cffi==0.15.0
 python-dotenv==1.2.2
 tenacity==8.5.0

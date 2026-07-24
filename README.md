@@ -47,7 +47,7 @@ flowchart LR
     API --> LOG[Bounded JSONL activity log]
 ```
 
-This repository contains the application, agent-facing HTTP workflow, security boundaries, and tests. Deployment-specific MCP adapter configuration and private agent instructions are intentionally excluded. In the full local deployment, the MCP adapter exposes the same controlled application capabilities to the agent.
+The included MCP server exposes the same authenticated application capabilities used by the dashboard. It communicates through the loopback FastAPI service and never reads PostgreSQL or application files directly.
 
 ## Main features
 
@@ -57,7 +57,7 @@ This repository contains the application, agent-facing HTTP workflow, security b
 - Current application state is read from PostgreSQL rather than agent memory.
 - Live listing verification before a discovery can be recorded.
 - Agent confidence is informational; it cannot approve its own discoveries.
-- Destructive integration operations are preview-only.
+- Discovery approval and destructive operations are not exposed through MCP.
 - Research runs expose status, counts, errors, and summaries in the Activity view.
 
 ### Price intelligence
@@ -132,6 +132,40 @@ If those ports are already in use, edit the generated `.env` before the first st
 
 An Anthropic API key is optional and needed only for the AI-assisted research workflow.
 
+## Connect an MCP client
+
+Start PriceWatch first, then configure an MCP client to launch the included
+stdio server. Replace the example path with the location of your clone:
+
+```json
+{
+  "mcpServers": {
+    "pricewatch": {
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\path\\to\\PriceWatch\\mcp_server\\start.ps1"
+      ]
+    }
+  }
+}
+```
+
+The launcher reads the random API credential and configured API port from the
+local `.env` created by `setup.ps1`; it does not print or copy the credential
+into the MCP configuration. The server provides tools to:
+
+- Read scopes, products, retailer sources, source health, discoveries, and runs.
+- Submit a live-verified discovery for human review.
+- Record research signals that appear in the dashboard.
+- Start and finish auditable external-agent research runs.
+
+The MCP surface intentionally excludes discovery approval, deletion, source
+configuration, and direct database or filesystem access.
+
 ## Test
 
 ```powershell
@@ -150,4 +184,9 @@ npm audit
 Pop-Location
 ```
 
-Runtime data, credentials, logs, screenshots, build output, virtual environments, and private agent instructions are intentionally excluded from version control.
+Runtime data, credentials, logs, screenshots, build output, and virtual
+environments are excluded from version control.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
